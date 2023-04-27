@@ -1,268 +1,268 @@
 <script setup>
-import { ref, reactive, computed } from 'vue'
-import DriverCard from './DriverCard.vue'
+  import { ref, reactive, computed } from 'vue'
+  import DriverCard from './DriverCard.vue'
 
-const drivers = ref([
-  {
-    id: 0,
-    driverName: 'Max Verstappen',
-    team: 'Red Bull',
-    wins: 37,
-    podiums: 80,
-    poles: 22,
-    points: 2080.5,
-    driverFlag: 'src/assets/flags/nl.png',
-    driverImg: 'src/assets/drivers/maxVerstappen.png',
-    teamColor: '#3671C6',
-  },
-  {
-    id: 1,
-    driverName: 'Sergio Perez',
-    team: 'Red Bull',
-    wins: 5,
-    podiums: 28,
-    poles: 2,
-    points: 1255,
-    driverFlag: 'src/assets/flags/mx.png',
-    driverImg: 'src/assets/drivers/sergioPerez.png',
-    teamColor: '#3671C6',
-  },
-  {
-    id: 2,
-    driverName: 'Charles Leclerc',
-    team: 'Ferrari',
-    wins: 5,
-    podiums: 24,
-    poles: 18,
-    points: 874,
-    driverFlag: 'src/assets/flags/mc.png',
-    driverImg: 'src/assets/drivers/charlesLeclerc.png',
-    teamColor: '#F91536',
-  },
-  {
-    id: 3,
-    driverName: 'Carlos Sainz',
-    team: 'Ferrari',
-    wins: 1,
-    podiums: 15,
-    poles: 3,
-    points: 802.5,
-    driverFlag: 'src/assets/flags/es.png',
-    driverImg: 'src/assets/drivers/carlosSainz.png',
-    teamColor: '#F91536',
-  },
-  {
-    id: 4,
-    driverName: 'Lewis Hamilton',
-    team: 'Mercedes',
-    wins: 103,
-    podiums: 192,
-    poles: 103,
-    points: 4443.5,
-    driverFlag: 'src/assets/flags/gb.png',
-    driverImg: 'src/assets/drivers/lewisHamilton.png',
-    teamColor: '#6CD3BF',
-  },
-  {
-    id: 5,
-    driverName: 'George Russell',
-    team: 'Mercedes',
-    wins: 1,
-    podiums: 9,
-    poles: 1,
-    points: 312,
-    driverFlag: 'src/assets/flags/gb.png',
-    driverImg: 'src/assets/drivers/georgeRussell.png',
-    teamColor: '#6CD3BF',
-  },
-  {
-    id: 6,
-    driverName: 'Esteban Ocon',
-    team: 'Alpine',
-    wins: 1,
-    podiums: 2,
-    poles: '-',
-    points: 368,
-    driverFlag: 'src/assets/flags/fr.png',
-    driverImg: 'src/assets/drivers/estebanOcon.png',
-    teamColor: '#2293D1',
-  },
-  {
-    id: 7,
-    driverName: 'Pierre Gasly',
-    team: 'Alpine',
-    wins: 1,
-    podiums: 3,
-    poles: '-',
-    points: 336,
-    driverFlag: 'src/assets/flags/fr.png',
-    driverImg: 'src/assets/drivers/pierreGasly.png',
-    teamColor: '#2293D1',
-  },
-  {
-    id: 8,
-    driverName: 'Lando Norris',
-    team: 'McLaren',
-    wins: '-',
-    podiums: 6,
-    poles: 1,
-    points: 436,
-    driverFlag: 'src/assets/flags/gb.png',
-    driverImg: 'src/assets/drivers/landoNorris.png',
-    teamColor: '#F58020',
-  },
-  {
-    id: 9,
-    driverName: 'Oscar Piastri',
-    team: 'McLaren',
-    wins: '-',
-    podiums: '-',
-    poles: '-',
-    points: 4,
-    driverFlag: 'src/assets/flags/au.png',
-    driverImg: 'src/assets/drivers/oscarPiastri.png',
-    teamColor: '#F58020',
-  },
-  {
-    id: 10,
-    driverName: 'Valtteri Bottas',
-    team: 'Alfa Romeo',
-    wins: 10,
-    podiums: 67,
-    poles: 20,
-    points: 1791,
-    driverFlag: 'src/assets/flags/fi.png',
-    driverImg: 'src/assets/drivers/valtteriBottas.png',
-    teamColor: '#C92D4B',
-  },
-  {
-    id: 11,
-    driverName: 'Guanyu Zhou',
-    team: 'Alfa Romeo',
-    wins: '-',
-    podiums: '-',
-    poles: '-',
-    points: 8,
-    driverFlag: 'src/assets/flags/cn.png',
-    driverImg: 'src/assets/drivers/kuanJuZhou.png',
-    teamColor: '#C92D4B',
-  },
-  {
-    id: 12,
-    driverName: 'Fernando Alonso',
-    team: 'Aston Martin',
-    wins: 32,
-    podiums: 101,
-    poles: 22,
-    points: 2106,
-    driverFlag: 'src/assets/flags/es.png',
-    driverImg: 'src/assets/drivers/fernandoAlonso.png',
-    teamColor: '#358C75',
-  },
-  {
-    id: 13,
-    driverName: 'Lance Stroll',
-    team: 'Aston Martin',
-    wins: '-',
-    podiums: 3,
-    poles: 1,
-    points: 214,
-    driverFlag: 'src/assets/flags/ca.png',
-    driverImg: 'src/assets/drivers/lanceStroll.png',
-    teamColor: '#358C75',
-  },
-  {
-    id: 14,
-    driverName: 'Kevin Magnussen',
-    team: 'Haas',
-    wins: '-',
-    podiums: 1,
-    poles: 1,
-    points: 184,
-    driverFlag: 'src/assets/flags/dk.png',
-    driverImg: 'src/assets/drivers/kevinMagnussen.png',
-    teamColor: '#B6BABD',
-  },
-  {
-    id: 15,
-    driverName: 'Nico Hulkenberg',
-    team: 'Haas',
-    wins: '-',
-    podiums: '-',
-    poles: 1,
-    points: 527,
-    driverFlag: 'src/assets/flags/de.png',
-    driverImg: 'src/assets/drivers/nicoHulkenberg.png',
-    teamColor: '#B6BABD',
-  },
-  {
-    id: 16,
-    driverName: 'Yuki Tsunoda',
-    team: 'Alpha Tauri',
-    wins: '-',
-    podiums: '-',
-    poles: '-',
-    points: 45,
-    driverFlag: 'src/assets/flags/jp.png',
-    driverImg: 'src/assets/drivers/yukiTsunoda.png',
-    teamColor: '#5E8FAA',
-  },
-  {
-    id: 17,
-    driverName: 'Nyck de Vries',
-    team: 'Alpha Tauri',
-    wins: '-',
-    podiums: '-',
-    poles: '-',
-    points: 2,
-    driverFlag: 'src/assets/flags/nl.png',
-    driverImg: 'src/assets/drivers/nyckDeVries.png',
-    teamColor: '#5E8FAA',
-  },
-  {
-    id: 18,
-    driverName: 'Alex Albon',
-    team: 'Williams',
-    wins: '-',
-    podiums: 2,
-    poles: '-',
-    points: 202,
-    driverFlag: 'src/assets/flags/th.png',
-    driverImg: 'src/assets/drivers/alexAlbon.png',
-    teamColor: '#37BEDD',
-  },
-  {
-    id: 19,
-    driverName: 'Logan Sargeant',
-    team: 'Williams',
-    wins: '-',
-    podiums: '-',
-    poles: '-',
-    points: '-',
-    driverFlag: 'src/assets/flags/us.png',
-    driverImg: 'src/assets/drivers/loganSargeant.png',
-    teamColor: '#37BEDD',
-  },
-])
+  const drivers = ref([
+    {
+      id: 0,
+      driverName: 'Max Verstappen',
+      team: 'Red Bull',
+      wins: 37,
+      podiums: 80,
+      poles: 22,
+      points: 2080.5,
+      driverFlag: 'src/assets/flags/nl.png',
+      driverImg: 'src/assets/drivers/maxVerstappen.png',
+      teamColor: '#3671C6',
+    },
+    {
+      id: 1,
+      driverName: 'Sergio Perez',
+      team: 'Red Bull',
+      wins: 5,
+      podiums: 28,
+      poles: 2,
+      points: 1255,
+      driverFlag: 'src/assets/flags/mx.png',
+      driverImg: 'src/assets/drivers/sergioPerez.png',
+      teamColor: '#3671C6',
+    },
+    {
+      id: 2,
+      driverName: 'Charles Leclerc',
+      team: 'Ferrari',
+      wins: 5,
+      podiums: 24,
+      poles: 18,
+      points: 874,
+      driverFlag: 'src/assets/flags/mc.png',
+      driverImg: 'src/assets/drivers/charlesLeclerc.png',
+      teamColor: '#F91536',
+    },
+    {
+      id: 3,
+      driverName: 'Carlos Sainz',
+      team: 'Ferrari',
+      wins: 1,
+      podiums: 15,
+      poles: 3,
+      points: 802.5,
+      driverFlag: 'src/assets/flags/es.png',
+      driverImg: 'src/assets/drivers/carlosSainz.png',
+      teamColor: '#F91536',
+    },
+    {
+      id: 4,
+      driverName: 'Lewis Hamilton',
+      team: 'Mercedes',
+      wins: 103,
+      podiums: 192,
+      poles: 103,
+      points: 4443.5,
+      driverFlag: 'src/assets/flags/gb.png',
+      driverImg: 'src/assets/drivers/lewisHamilton.png',
+      teamColor: '#6CD3BF',
+    },
+    {
+      id: 5,
+      driverName: 'George Russell',
+      team: 'Mercedes',
+      wins: 1,
+      podiums: 9,
+      poles: 1,
+      points: 312,
+      driverFlag: 'src/assets/flags/gb.png',
+      driverImg: 'src/assets/drivers/georgeRussell.png',
+      teamColor: '#6CD3BF',
+    },
+    {
+      id: 6,
+      driverName: 'Esteban Ocon',
+      team: 'Alpine',
+      wins: 1,
+      podiums: 2,
+      poles: '-',
+      points: 368,
+      driverFlag: 'src/assets/flags/fr.png',
+      driverImg: 'src/assets/drivers/estebanOcon.png',
+      teamColor: '#2293D1',
+    },
+    {
+      id: 7,
+      driverName: 'Pierre Gasly',
+      team: 'Alpine',
+      wins: 1,
+      podiums: 3,
+      poles: '-',
+      points: 336,
+      driverFlag: 'src/assets/flags/fr.png',
+      driverImg: 'src/assets/drivers/pierreGasly.png',
+      teamColor: '#2293D1',
+    },
+    {
+      id: 8,
+      driverName: 'Lando Norris',
+      team: 'McLaren',
+      wins: '-',
+      podiums: 6,
+      poles: 1,
+      points: 436,
+      driverFlag: 'src/assets/flags/gb.png',
+      driverImg: 'src/assets/drivers/landoNorris.png',
+      teamColor: '#F58020',
+    },
+    {
+      id: 9,
+      driverName: 'Oscar Piastri',
+      team: 'McLaren',
+      wins: '-',
+      podiums: '-',
+      poles: '-',
+      points: 4,
+      driverFlag: 'src/assets/flags/au.png',
+      driverImg: 'src/assets/drivers/oscarPiastri.png',
+      teamColor: '#F58020',
+    },
+    {
+      id: 10,
+      driverName: 'Valtteri Bottas',
+      team: 'Alfa Romeo',
+      wins: 10,
+      podiums: 67,
+      poles: 20,
+      points: 1791,
+      driverFlag: 'src/assets/flags/fi.png',
+      driverImg: 'src/assets/drivers/valtteriBottas.png',
+      teamColor: '#C92D4B',
+    },
+    {
+      id: 11,
+      driverName: 'Guanyu Zhou',
+      team: 'Alfa Romeo',
+      wins: '-',
+      podiums: '-',
+      poles: '-',
+      points: 8,
+      driverFlag: 'src/assets/flags/cn.png',
+      driverImg: 'src/assets/drivers/kuanJuZhou.png',
+      teamColor: '#C92D4B',
+    },
+    {
+      id: 12,
+      driverName: 'Fernando Alonso',
+      team: 'Aston Martin',
+      wins: 32,
+      podiums: 101,
+      poles: 22,
+      points: 2106,
+      driverFlag: 'src/assets/flags/es.png',
+      driverImg: 'src/assets/drivers/fernandoAlonso.png',
+      teamColor: '#358C75',
+    },
+    {
+      id: 13,
+      driverName: 'Lance Stroll',
+      team: 'Aston Martin',
+      wins: '-',
+      podiums: 3,
+      poles: 1,
+      points: 214,
+      driverFlag: 'src/assets/flags/ca.png',
+      driverImg: 'src/assets/drivers/lanceStroll.png',
+      teamColor: '#358C75',
+    },
+    {
+      id: 14,
+      driverName: 'Kevin Magnussen',
+      team: 'Haas',
+      wins: '-',
+      podiums: 1,
+      poles: 1,
+      points: 184,
+      driverFlag: 'src/assets/flags/dk.png',
+      driverImg: 'src/assets/drivers/kevinMagnussen.png',
+      teamColor: '#B6BABD',
+    },
+    {
+      id: 15,
+      driverName: 'Nico Hulkenberg',
+      team: 'Haas',
+      wins: '-',
+      podiums: '-',
+      poles: 1,
+      points: 527,
+      driverFlag: 'src/assets/flags/de.png',
+      driverImg: 'src/assets/drivers/nicoHulkenberg.png',
+      teamColor: '#B6BABD',
+    },
+    {
+      id: 16,
+      driverName: 'Yuki Tsunoda',
+      team: 'Alpha Tauri',
+      wins: '-',
+      podiums: '-',
+      poles: '-',
+      points: 45,
+      driverFlag: 'src/assets/flags/jp.png',
+      driverImg: 'src/assets/drivers/yukiTsunoda.png',
+      teamColor: '#5E8FAA',
+    },
+    {
+      id: 17,
+      driverName: 'Nyck de Vries',
+      team: 'Alpha Tauri',
+      wins: '-',
+      podiums: '-',
+      poles: '-',
+      points: 2,
+      driverFlag: 'src/assets/flags/nl.png',
+      driverImg: 'src/assets/drivers/nyckDeVries.png',
+      teamColor: '#5E8FAA',
+    },
+    {
+      id: 18,
+      driverName: 'Alex Albon',
+      team: 'Williams',
+      wins: '-',
+      podiums: 2,
+      poles: '-',
+      points: 202,
+      driverFlag: 'src/assets/flags/th.png',
+      driverImg: 'src/assets/drivers/alexAlbon.png',
+      teamColor: '#37BEDD',
+    },
+    {
+      id: 19,
+      driverName: 'Logan Sargeant',
+      team: 'Williams',
+      wins: '-',
+      podiums: '-',
+      poles: '-',
+      points: '-',
+      driverFlag: 'src/assets/flags/us.png',
+      driverImg: 'src/assets/drivers/loganSargeant.png',
+      teamColor: '#37BEDD',
+    },
+  ])
 
-const pages = reactive({
-  displayedItems: [],
-  visibleCount: 8,
-  currentPage: 1,
-})
+  const pages = reactive({
+    displayedItems: [],
+    visibleCount: 8,
+    currentPage: 1,
+  })
 
-const pageCount = computed(() => {
-  return Math.ceil(drivers.value.length / pages.visibleCount)
-})
+  const pageCount = computed(() => {
+    return Math.ceil(drivers.value.length / pages.visibleCount)
+  })
 
-const showPage = (page) => {
-  const startIndex = (page - 1) * pages.visibleCount
-  const endIndex = startIndex + pages.visibleCount
-  pages.displayedItems = drivers.value.slice(startIndex, endIndex)
-  pages.currentPage = page
-}
+  const showPage = (page) => {
+    const startIndex = (page - 1) * pages.visibleCount
+    const endIndex = startIndex + pages.visibleCount
+    pages.displayedItems = drivers.value.slice(startIndex, endIndex)
+    pages.currentPage = page
+  }
 
-showPage(1)
+  showPage(1)
 </script>
 
 <template>
@@ -309,45 +309,45 @@ showPage(1)
 </template>
 
 <style scoped>
-.driversWrapper {
-  padding-top: 7.5rem;
-  height: 100vh;
-  background-color: rgb(34, 62, 47);
+  .driversWrapper {
+    padding-top: 7.5rem;
+    height: 100vh;
+    background-color: rgb(34, 62, 47);
 
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 2rem;
-}
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2rem;
+  }
 
-.drivers {
-  width: fit-content;
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  grid-template-rows: repeat(2, 1fr);
-  gap: 2rem;
-  margin: 0 auto;
-}
+  .drivers {
+    width: fit-content;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 2rem;
+    margin: 0 auto;
+  }
 
-.pagination {
-  display: flex;
-  flex-direction: row;
-  gap: 1.5rem;
-  justify-content: center;
-}
+  .pagination {
+    display: flex;
+    flex-direction: row;
+    gap: 1.5rem;
+    justify-content: center;
+  }
 
-.pageHelmet {
-  width: 28px;
-  fill: var(--font-color-light-200);
-  cursor: pointer;
-}
+  .pageHelmet {
+    width: 28px;
+    fill: var(--font-color-light-200);
+    cursor: pointer;
+  }
 
-.selected {
-  fill: var(--accent-color-400);
-}
+  .selected {
+    fill: var(--accent-color-400);
+  }
 
-.pageHelmet:hover,
-.pageHelmet:active {
-  fill: var(--accent-color-400);
-}
+  .pageHelmet:hover,
+  .pageHelmet:active {
+    fill: var(--accent-color-400);
+  }
 </style>
