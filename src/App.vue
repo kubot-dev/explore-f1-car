@@ -1,5 +1,4 @@
 <script setup>
-  import ExploreCar from './components/ExploreCar.vue'
   import ExploreDrivers from './components/ExploreDrivers.vue'
   import ExploreTracks from './components/ExploreTracks.vue'
   import Navigation from './components/Navigation.vue'
@@ -9,7 +8,12 @@
   <div class="wrapper">
     <Navigation class="siteNav"></Navigation>
     <main class="content">
-      <ExploreCar id="exploreCar"></ExploreCar>
+      <div id="exploreCarWrapper">
+        <div class="exploreCar">
+          <div class="loading-bar"></div>
+        </div>
+      </div>
+      <!-- <ExploreCar id="exploreCar"></ExploreCar> -->
       <ExploreDrivers id="exploreDrivers"></ExploreDrivers>
       <ExploreTracks id="exploreTracks"></ExploreTracks>
     </main>
