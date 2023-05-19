@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@tweakpane/plugin-essentials": "^0.1.8",
     "@vueuse/core": "^10.0.2",
     "gsap": "^3.11.5",
     "install": "^0.13.0",

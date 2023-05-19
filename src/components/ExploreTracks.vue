@@ -1,4 +1,12 @@
 <script>
+  import silverStoneTrack from '/src/assets/tracks/trackSilverstone.svg'
+  import gbFlag from '/src/assets/flags/gb.png'
+
+  import albertParkTrack from '/src/assets/tracks/trackAlbertPark.svg'
+  import auFlag from '/src/assets/flags/au.png'
+
+  import monzaTrack from '/src/assets/tracks/RaceCircuitAutodromaDiMonza.svg'
+  import itFlag from '/src/assets/flags/it.png'
   // script setup interfere with swiper library
 
   import { ref } from 'vue'
@@ -17,9 +25,8 @@
         {
           id: 0,
           trackName: 'Silverstone',
-          track: 'src/assets/tracks/trackSilverstone.svg',
-          trackFlag: 'src/assets/flags/gb.png',
-          trackMin: 'src/assets/tracks/RaceCircuitRedBull.svg',
+          track: silverStoneTrack,
+          trackFlag: gbFlag,
           circuitLength: 5.891,
           numberOfLaps: 52,
           raceDistance: 306.198,
@@ -45,9 +52,8 @@
         {
           id: 1,
           trackName: 'Albert Park',
-          track: 'src/assets/tracks/trackAlbertPark.svg',
-          trackFlag: 'src/assets/flags/au.png',
-          trackMin: 'src/assets/tracks/RaceCircuitAlbertPark.svg',
+          track: albertParkTrack,
+          trackFlag: auFlag,
           circuitLength: 5.278,
           numberOfLaps: 58,
           raceDistance: 306.124,
@@ -78,9 +84,8 @@
         {
           id: 2,
           trackName: 'Monza',
-          track: 'src/assets/tracks/RaceCircuitAutodromaDiMonza.svg',
-          trackFlag: 'src/assets/flags/it.png',
-          trackMin: 'src/assets/tracks/RaceCircuitAutodromaDiMonza.svg',
+          track: monzaTrack,
+          trackFlag: itFlag,
           circuitLength: 5.793,
           numberOfLaps: 53,
           raceDistance: 306.72,
@@ -137,7 +142,6 @@
 
     padding-top: 7.5rem;
     height: 100vh;
-    background-color: rgb(63, 43, 64);
   }
 
   swiper-slide {

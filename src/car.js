@@ -10,18 +10,23 @@ import {
   Vector2,
   CircleGeometry,
   TextureLoader,
-  Vector3,
   DirectionalLight,
+  DirectionalLightHelper,
   ShaderMaterial,
   PlaneGeometry,
-  AxesHelper,
   BackSide,
   LoadingManager,
   PCFSoftShadowMap,
+  CubeTextureLoader,
+  SRGBColorSpace,
+  ColorManagement,
+  ACESFilmicToneMapping,
 } from 'three'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import { gsap } from 'gsap'
+import { Pane } from 'tweakpane'
+import * as EssentialsPlugin from '@tweakpane/plugin-essentials'
 
 // Container element
 let wrapper = document.querySelector('.exploreCar')
@@ -30,11 +35,17 @@ let wrapperHeight = wrapper.clientHeight
 
 const loadingBarElement = document.querySelector('.loading-bar')
 
-let camera, scene, raycaster, renderer
+let camera, scene, renderer
+let directLightHelper
 let controls
-
 let INTERSECTED
-const pointer = new Vector2()
+let pointer = new Vector2()
+const raycaster = new Raycaster()
+
+let sceneLoaded = false
+let fpsGraph
+
+ColorManagement.enabled = true
 
 init()
 animate()
@@ -43,19 +54,43 @@ function init() {
   // Main
   scene = new Scene()
   camera = new PerspectiveCamera(75, wrapperWidth / wrapperHeight, 0.1, 1000)
-  renderer = new WebGLRenderer()
+  renderer = new WebGLRenderer({
+    antialias: true,
+  })
   controls = new OrbitControls(camera, renderer.domElement)
+  const pane = new Pane()
+  pane.registerPlugin(EssentialsPlugin)
+  const cubeTextureLoader = new CubeTextureLoader()
+
+  fpsGraph = pane.addBlade({
+    view: 'fpsgraph',
+    label: 'fpsgraph',
+  })
+
+  const debugParams = {
+    envMapIntensity: 1,
+  }
   // const axesHelper = new AxesHelper(5)
   // scene.add(axesHelper)
 
   // Main setup
   scene.background = new Color(0x0f1111)
-
-  camera.position.set(3, 3, 8)
+  camera.position.set(0, 3, 6)
   camera.lookAt(0, 0, 0)
+
+  const cameraFolder = pane.addFolder({
+    title: 'perspective camera',
+    expanded: true,
+  })
+  cameraFolder.addInput(camera.position, 'x', { min: -10, max: 10, step: 0.1, label: 'camera x' })
+  cameraFolder.addInput(camera.position, 'y', { min: -10, max: 10, step: 0.1, label: 'camera y' })
+  cameraFolder.addInput(camera.position, 'z', { min: -10, max: 10, step: 0.1, label: 'camera z' })
 
   renderer.setPixelRatio(window.devicePixelRatio)
   renderer.setSize(wrapperWidth, wrapperHeight)
+  renderer.physicallyCorrectLights = true
+  renderer.outputColorSpace = SRGBColorSpace
+  renderer.toneMapping = ACESFilmicToneMapping
   renderer.shadowMap.enabled = true
   renderer.shadowMap.type = PCFSoftShadowMap
   wrapper.appendChild(renderer.domElement)
@@ -68,22 +103,59 @@ function init() {
   Object.assign(controls, controlsOptions)
 
   // Lights
-  const ambientLight = new AmbientLight(0xffffff, 1)
-  const directLight = new DirectionalLight(0xf1f1f1, 1)
+  const ambientLight = new AmbientLight(0xffffff, 0)
+  const directLight = new DirectionalLight(0xf1f1f1, 5)
   directLight.castShadow = true
-  directLight.position.set(5, 5, 2)
+  directLight.position.set(-5, 5, 0)
   directLight.lookAt(0, 0, 0)
+  directLight.shadow.mapSize.set(2048, 2048)
+  directLight.shadow.camera.near = 0.1
+  directLight.shadow.camera.far = 1000
+  directLight.shadow.normalBias = 0.01
 
-  // directLight.shadow.mapSize.width = 1024
-  // directLight.shadow.mapSize.height = 1024
-  // directLight.shadow.camera.near = 0.1
-  // directLight.shadow.camera.far = 1000
+  directLightHelper = new DirectionalLightHelper(directLight, 2)
+
+  const lightsFolder = pane.addFolder({
+    title: 'Lights',
+    expanded: true,
+  })
+  lightsFolder.addInput(ambientLight, 'intensity', { min: 0, max: 20, label: 'amb intensity' })
+  lightsFolder.addInput(directLight, 'intensity', { min: 0, max: 20, label: 'dir intensity' })
+  lightsFolder.addInput(directLight.position, 'x', { min: -20, max: 20, label: 'dir posX' })
+  lightsFolder.addInput(directLight.position, 'y', { min: 0, max: 20, label: 'dir posY' })
+  lightsFolder.addInput(directLight.position, 'z', { min: -20, max: 20, label: 'dir posZ' })
+
+  const updateAllMaterials = () => {
+    scene.traverse((child) => {
+      if (child instanceof Mesh && child.material instanceof MeshStandardMaterial) {
+        child.material.envMap = environmentMap
+        child.material.envMapIntensity = debugParams.envMapIntensity
+        child.castShadow = true
+        child.receiveShadow = true
+      }
+    })
+  }
+
+  const environmentMap = cubeTextureLoader.load([
+    'src/assets/environmentMaps/0/px.jpg',
+    'src/assets/environmentMaps/0/nx.jpg',
+    'src/assets/environmentMaps/0/py.jpg',
+    'src/assets/environmentMaps/0/ny.jpg',
+    'src/assets/environmentMaps/0/pz.jpg',
+    'src/assets/environmentMaps/0/nz.jpg',
+  ])
+
+  // scene.background = environmentMap
+
+  lightsFolder.addInput(debugParams, 'envMapIntensity', { min: 0, max: 10 }).on('change', () => {
+    updateAllMaterials()
+  })
 
   // Geometry
   const textureLoader = new TextureLoader()
-  const alphaCircle = textureLoader.load('src/assets/gradient_img (2).png')
+  const alphaCircle = textureLoader.load('src/assets/gradient_img.png')
   const material = new MeshStandardMaterial({
-    color: 0x1f1f1f,
+    color: 0x0f1111,
     alphaMap: alphaCircle,
     transparent: true,
     side: BackSide,
@@ -93,7 +165,7 @@ function init() {
   plane.receiveShadow = true
   plane.rotation.x = Math.PI / 2
 
-  scene.add(ambientLight, directLight, plane)
+  scene.add(ambientLight, directLight, directLightHelper, plane)
 
   /**
    * Overlay
@@ -131,6 +203,7 @@ function init() {
         loadingBarElement.classList.add('ended')
         loadingBarElement.style.transform = ''
       }, 500)
+      sceneLoaded = true
     },
 
     // Progress
@@ -142,21 +215,21 @@ function init() {
   const gltfLoader = new GLTFLoader(loadingManager)
 
   // Model
-  gltfLoader.load('src/assets/generic-2022-f1-car/f1car.gltf', (gltf) => {
+  gltfLoader.load('src/assets/fonecar/fonecaredited.gltf', (gltf) => {
     const model = gltf.scene
-    model.castShadow = true
     scene.add(model)
+    updateAllMaterials()
   })
 
   // Raycaster
-  raycaster = new Raycaster()
+  pointer.set(-1, 1)
 
   // Controls
 
-  document.addEventListener('mousemove', onPointerMove)
+  wrapper.addEventListener('mousemove', onPointerMove)
 
   window.addEventListener('resize', onWindowResize)
-  window.addEventListener('dblclick', () => {
+  wrapper.addEventListener('dblclick', () => {
     const fullscreenElement = document.fullscreenElement || document.webkitFullscreenElement
     if (!fullscreenElement) {
       if (wrapper.requestFullscreen) {
@@ -186,37 +259,38 @@ function onWindowResize() {
 }
 
 function onPointerMove(event) {
-  pointer.x = (event.clientX / window.innerWidth) * 2 - 1
-  pointer.y = -(event.clientY / window.innerHeight) * 2 + 1
+  pointer.x = (event.offsetX / wrapperWidth) * 2 - 1
+  pointer.y = -(event.offsetY / wrapperHeight) * 2 + 1
 }
 
 function animate() {
   requestAnimationFrame(animate)
-
-  render()
   controls.update()
+
+  directLightHelper.update()
+  render()
 }
 
+console.log(scene)
 function render() {
-  // raycaster.setFromCamera(pointer, camera)
-
-  // const intersects = raycaster.intersectObjects(scene.children, true)
-
-  // console.log(intersects)
-
-  // if (intersects.length > 0) {
-  //   if (INTERSECTED != intersects[0].object) {
-  //     if (INTERSECTED) INTERSECTED.material.emissive.setHex(INTERSECTED.currentHex)
-
-  //     INTERSECTED = intersects[0].object
-  //     INTERSECTED.currentHex = INTERSECTED.material.emissive.getHex()
-  //     INTERSECTED.material.emissive.setHex(0xff0000)
-  //   }
-  // } else {
-  //   if (INTERSECTED) INTERSECTED.material.emissive.setHex(INTERSECTED.currentHex)
-
-  //   INTERSECTED = null
-  // }
-
+  if (sceneLoaded) {
+    raycaster.setFromCamera(pointer, camera)
+    let intersects = null
+    intersects = raycaster.intersectObjects(scene.children[5].children[0].children)
+    console.log(intersects)
+    if (intersects.length > 0) {
+      if (INTERSECTED != intersects[0].object) {
+        if (INTERSECTED) INTERSECTED.material.emissive.setHex(INTERSECTED.currentHex)
+        INTERSECTED = intersects[0].object
+        INTERSECTED.currentHex = INTERSECTED.material.emissive.getHex()
+        INTERSECTED.material.emissive.setHex(0xff0000)
+      }
+    } else {
+      if (INTERSECTED) INTERSECTED.material.emissive.setHex(INTERSECTED.currentHex)
+      INTERSECTED = null
+    }
+  }
+  fpsGraph.begin()
   renderer.render(scene, camera)
+  fpsGraph.end()
 }

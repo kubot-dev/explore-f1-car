@@ -13,7 +13,6 @@
           <div class="loading-bar"></div>
         </div>
       </div>
-      <!-- <ExploreCar id="exploreCar"></ExploreCar> -->
       <ExploreDrivers id="exploreDrivers"></ExploreDrivers>
       <ExploreTracks id="exploreTracks"></ExploreTracks>
     </main>
@@ -29,7 +28,9 @@
     z-index: 10;
     background-color: #0f111142;
   }
+
   .wrapper {
+    background-color: var(--bg-color-main);
     scroll-behavior: smooth;
     overflow: auto;
     max-width: 100%;

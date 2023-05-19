@@ -2,6 +2,100 @@
   import { ref, reactive, computed } from 'vue'
   import DriverCard from './DriverCard.vue'
 
+  import atFlag from '/src/assets/flags/at.png'
+  import auFlag from '/src/assets/flags/au.png'
+  import beFlag from '/src/assets/flags/be.png'
+  import bhFlag from '/src/assets/flags/bh.png'
+  import brFlag from '/src/assets/flags/br.png'
+  import caFlag from '/src/assets/flags/ca.png'
+  import cnFlag from '/src/assets/flags/cn.png'
+  import deFlag from '/src/assets/flags/de.png'
+  import dkFlag from '/src/assets/flags/dk.png'
+  import esFlag from '/src/assets/flags/es.png'
+  import fiFlag from '/src/assets/flags/fi.png'
+  import frFlag from '/src/assets/flags/fr.png'
+  import gbFlag from '/src/assets/flags/gb.png'
+  import huFlag from '/src/assets/flags/hu.png'
+  import itFlag from '/src/assets/flags/it.png'
+  import jpFlag from '/src/assets/flags/jp.png'
+  import mcFlag from '/src/assets/flags/mc.png'
+  import mxFlag from '/src/assets/flags/mx.png'
+  import nlFlag from '/src/assets/flags/nl.png'
+  import noFlag from '/src/assets/flags/no.png'
+  import qaFlag from '/src/assets/flags/qa.png'
+  import thFlag from '/src/assets/flags/th.png'
+  import usFlag from '/src/assets/flags/us.png'
+
+  const flags = {
+    at: atFlag,
+    au: auFlag,
+    be: beFlag,
+    bh: bhFlag,
+    br: brFlag,
+    ca: caFlag,
+    cn: cnFlag,
+    de: deFlag,
+    dk: dkFlag,
+    es: esFlag,
+    fi: fiFlag,
+    fr: frFlag,
+    gb: gbFlag,
+    hu: huFlag,
+    it: itFlag,
+    jp: jpFlag,
+    mc: mcFlag,
+    mx: mxFlag,
+    nl: nlFlag,
+    no: noFlag,
+    qa: qaFlag,
+    th: thFlag,
+    us: usFlag,
+  }
+
+  import alexAlbon from '/src/assets/drivers/alexAlbon.png'
+  import carlosSainz from '/src/assets/drivers/carlosSainz.png'
+  import charlesLeclerc from '/src/assets/drivers/charlesLeclerc.png'
+  import estebanOcon from '/src/assets/drivers/estebanOcon.png'
+  import fernandoAlonso from '/src/assets/drivers/fernandoAlonso.png'
+  import georgeRussell from '/src/assets/drivers/georgeRussell.png'
+  import kevinMagnussen from '/src/assets/drivers/kevinMagnussen.png'
+  import kuanJuZhou from '/src/assets/drivers/kuanJuZhou.png'
+  import lanceStroll from '/src/assets/drivers/lanceStroll.png'
+  import landoNorris from '/src/assets/drivers/landoNorris.png'
+  import lewisHamilton from '/src/assets/drivers/lewisHamilton.png'
+  import loganSargeant from '/src/assets/drivers/loganSargeant.png'
+  import maxVerstappen from '/src/assets/drivers/maxVerstappen.png'
+  import nicoHulkenberg from '/src/assets/drivers/nicoHulkenberg.png'
+  import nyckDeVries from '/src/assets/drivers/nyckDeVries.png'
+  import oscarPiastri from '/src/assets/drivers/oscarPiastri.png'
+  import pierreGasly from '/src/assets/drivers/pierreGasly.png'
+  import sergioPerez from '/src/assets/drivers/sergioPerez.png'
+  import valtteriBottas from '/src/assets/drivers/valtteriBottas.png'
+  import yukiTsunoda from '/src/assets/drivers/yukiTsunoda.png'
+
+  const driverImages = {
+    alexAlbon,
+    carlosSainz,
+    charlesLeclerc,
+    estebanOcon,
+    fernandoAlonso,
+    georgeRussell,
+    kevinMagnussen,
+    kuanJuZhou,
+    lanceStroll,
+    landoNorris,
+    lewisHamilton,
+    loganSargeant,
+    maxVerstappen,
+    nicoHulkenberg,
+    nyckDeVries,
+    oscarPiastri,
+    pierreGasly,
+    sergioPerez,
+    valtteriBottas,
+    yukiTsunoda,
+  }
+
   const drivers = ref([
     {
       id: 0,
@@ -11,8 +105,8 @@
       podiums: 80,
       poles: 22,
       points: 2080.5,
-      driverFlag: 'src/assets/flags/nl.png',
-      driverImg: 'src/assets/drivers/maxVerstappen.png',
+      driverFlag: flags.nl,
+      driverImg: driverImages.maxVerstappen,
       teamColor: '#3671C6',
     },
     {
@@ -23,8 +117,8 @@
       podiums: 28,
       poles: 2,
       points: 1255,
-      driverFlag: 'src/assets/flags/mx.png',
-      driverImg: 'src/assets/drivers/sergioPerez.png',
+      driverFlag: flags.mx,
+      driverImg: driverImages.sergioPerez,
       teamColor: '#3671C6',
     },
     {
@@ -35,8 +129,8 @@
       podiums: 24,
       poles: 18,
       points: 874,
-      driverFlag: 'src/assets/flags/mc.png',
-      driverImg: 'src/assets/drivers/charlesLeclerc.png',
+      driverFlag: flags.mc,
+      driverImg: driverImages.charlesLeclerc,
       teamColor: '#F91536',
     },
     {
@@ -47,8 +141,8 @@
       podiums: 15,
       poles: 3,
       points: 802.5,
-      driverFlag: 'src/assets/flags/es.png',
-      driverImg: 'src/assets/drivers/carlosSainz.png',
+      driverFlag: flags.es,
+      driverImg: driverImages.carlosSainz,
       teamColor: '#F91536',
     },
     {
@@ -59,8 +153,8 @@
       podiums: 192,
       poles: 103,
       points: 4443.5,
-      driverFlag: 'src/assets/flags/gb.png',
-      driverImg: 'src/assets/drivers/lewisHamilton.png',
+      driverFlag: flags.gb,
+      driverImg: driverImages.lewisHamilton,
       teamColor: '#6CD3BF',
     },
     {
@@ -71,8 +165,8 @@
       podiums: 9,
       poles: 1,
       points: 312,
-      driverFlag: 'src/assets/flags/gb.png',
-      driverImg: 'src/assets/drivers/georgeRussell.png',
+      driverFlag: flags.gb,
+      driverImg: driverImages.georgeRussell,
       teamColor: '#6CD3BF',
     },
     {
@@ -83,8 +177,8 @@
       podiums: 2,
       poles: '-',
       points: 368,
-      driverFlag: 'src/assets/flags/fr.png',
-      driverImg: 'src/assets/drivers/estebanOcon.png',
+      driverFlag: flags.fr,
+      driverImg: driverImages.estebanOcon,
       teamColor: '#2293D1',
     },
     {
@@ -95,8 +189,8 @@
       podiums: 3,
       poles: '-',
       points: 336,
-      driverFlag: 'src/assets/flags/fr.png',
-      driverImg: 'src/assets/drivers/pierreGasly.png',
+      driverFlag: flags.fr,
+      driverImg: driverImages.pierreGasly,
       teamColor: '#2293D1',
     },
     {
@@ -107,8 +201,8 @@
       podiums: 6,
       poles: 1,
       points: 436,
-      driverFlag: 'src/assets/flags/gb.png',
-      driverImg: 'src/assets/drivers/landoNorris.png',
+      driverFlag: flags.gb,
+      driverImg: driverImages.landoNorris,
       teamColor: '#F58020',
     },
     {
@@ -119,8 +213,8 @@
       podiums: '-',
       poles: '-',
       points: 4,
-      driverFlag: 'src/assets/flags/au.png',
-      driverImg: 'src/assets/drivers/oscarPiastri.png',
+      driverFlag: flags.au,
+      driverImg: driverImages.oscarPiastri,
       teamColor: '#F58020',
     },
     {
@@ -131,8 +225,8 @@
       podiums: 67,
       poles: 20,
       points: 1791,
-      driverFlag: 'src/assets/flags/fi.png',
-      driverImg: 'src/assets/drivers/valtteriBottas.png',
+      driverFlag: flags.fi,
+      driverImg: driverImages.valtteriBottas,
       teamColor: '#C92D4B',
     },
     {
@@ -143,8 +237,8 @@
       podiums: '-',
       poles: '-',
       points: 8,
-      driverFlag: 'src/assets/flags/cn.png',
-      driverImg: 'src/assets/drivers/kuanJuZhou.png',
+      driverFlag: flags.cn,
+      driverImg: driverImages.kuanJuZhou,
       teamColor: '#C92D4B',
     },
     {
@@ -155,8 +249,8 @@
       podiums: 101,
       poles: 22,
       points: 2106,
-      driverFlag: 'src/assets/flags/es.png',
-      driverImg: 'src/assets/drivers/fernandoAlonso.png',
+      driverFlag: flags.es,
+      driverImg: driverImages.fernandoAlonso,
       teamColor: '#358C75',
     },
     {
@@ -167,8 +261,8 @@
       podiums: 3,
       poles: 1,
       points: 214,
-      driverFlag: 'src/assets/flags/ca.png',
-      driverImg: 'src/assets/drivers/lanceStroll.png',
+      driverFlag: flags.ca,
+      driverImg: driverImages.lanceStroll,
       teamColor: '#358C75',
     },
     {
@@ -179,8 +273,8 @@
       podiums: 1,
       poles: 1,
       points: 184,
-      driverFlag: 'src/assets/flags/dk.png',
-      driverImg: 'src/assets/drivers/kevinMagnussen.png',
+      driverFlag: flags.dk,
+      driverImg: driverImages.kevinMagnussen,
       teamColor: '#B6BABD',
     },
     {
@@ -191,8 +285,8 @@
       podiums: '-',
       poles: 1,
       points: 527,
-      driverFlag: 'src/assets/flags/de.png',
-      driverImg: 'src/assets/drivers/nicoHulkenberg.png',
+      driverFlag: flags.de,
+      driverImg: driverImages.nicoHulkenberg,
       teamColor: '#B6BABD',
     },
     {
@@ -203,8 +297,8 @@
       podiums: '-',
       poles: '-',
       points: 45,
-      driverFlag: 'src/assets/flags/jp.png',
-      driverImg: 'src/assets/drivers/yukiTsunoda.png',
+      driverFlag: flags.jp,
+      driverImg: driverImages.yukiTsunoda,
       teamColor: '#5E8FAA',
     },
     {
@@ -215,8 +309,8 @@
       podiums: '-',
       poles: '-',
       points: 2,
-      driverFlag: 'src/assets/flags/nl.png',
-      driverImg: 'src/assets/drivers/nyckDeVries.png',
+      driverFlag: flags.nl,
+      driverImg: driverImages.nyckDeVries,
       teamColor: '#5E8FAA',
     },
     {
@@ -227,8 +321,8 @@
       podiums: 2,
       poles: '-',
       points: 202,
-      driverFlag: 'src/assets/flags/th.png',
-      driverImg: 'src/assets/drivers/alexAlbon.png',
+      driverFlag: flags.th,
+      driverImg: driverImages.alexAlbon,
       teamColor: '#37BEDD',
     },
     {
@@ -239,8 +333,8 @@
       podiums: '-',
       poles: '-',
       points: '-',
-      driverFlag: 'src/assets/flags/us.png',
-      driverImg: 'src/assets/drivers/loganSargeant.png',
+      driverFlag: flags.us,
+      driverImg: driverImages.loganSargeant,
       teamColor: '#37BEDD',
     },
   ])
@@ -312,7 +406,6 @@
   .driversWrapper {
     padding-top: 7.5rem;
     height: 100vh;
-    background-color: rgb(34, 62, 47);
 
     display: flex;
     flex-direction: column;
