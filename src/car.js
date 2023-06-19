@@ -21,12 +21,26 @@ import {
   SRGBColorSpace,
   ColorManagement,
   ACESFilmicToneMapping,
+  Vector3,
 } from 'three'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
+import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js'
+import { OutlinePass } from 'three/addons/postprocessing/OutlinePass.js'
+import { GammaCorrectionShader } from 'three/examples/jsm/shaders/GammaCorrectionShader'
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js'
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js'
 import { gsap } from 'gsap'
 import { Pane } from 'tweakpane'
 import * as EssentialsPlugin from '@tweakpane/plugin-essentials'
+
+import px from '/src/assets/environmentMaps/0/px.jpg'
+import nx from '/src/assets/environmentMaps/0/nx.jpg'
+import py from '/src/assets/environmentMaps/0/py.jpg'
+import ny from '/src/assets/environmentMaps/0/ny.jpg'
+import pz from '/src/assets/environmentMaps/0/pz.jpg'
+import nz from '/src/assets/environmentMaps/0/nz.jpg'
+import gradient from '/src/assets/gradient_img.png'
 
 // Container element
 let wrapper = document.querySelector('.exploreCar')
@@ -44,6 +58,9 @@ const raycaster = new Raycaster()
 
 let sceneLoaded = false
 let fpsGraph
+let selectedObjects
+let effectComposer
+let outlinePass
 
 ColorManagement.enabled = true
 
@@ -70,8 +87,6 @@ function init() {
   const debugParams = {
     envMapIntensity: 1,
   }
-  // const axesHelper = new AxesHelper(5)
-  // scene.add(axesHelper)
 
   // Main setup
   scene.background = new Color(0x0f1111)
@@ -80,7 +95,7 @@ function init() {
 
   const cameraFolder = pane.addFolder({
     title: 'perspective camera',
-    expanded: true,
+    expanded: false,
   })
   cameraFolder.addInput(camera.position, 'x', { min: -10, max: 10, step: 0.1, label: 'camera x' })
   cameraFolder.addInput(camera.position, 'y', { min: -10, max: 10, step: 0.1, label: 'camera y' })
@@ -114,10 +129,12 @@ function init() {
   directLight.shadow.normalBias = 0.01
 
   directLightHelper = new DirectionalLightHelper(directLight, 2)
+  directLightHelper.visible = false
+  // console.log(directLightHelper)
 
   const lightsFolder = pane.addFolder({
     title: 'Lights',
-    expanded: true,
+    expanded: false,
   })
   lightsFolder.addInput(ambientLight, 'intensity', { min: 0, max: 20, label: 'amb intensity' })
   lightsFolder.addInput(directLight, 'intensity', { min: 0, max: 20, label: 'dir intensity' })
@@ -136,14 +153,7 @@ function init() {
     })
   }
 
-  const environmentMap = cubeTextureLoader.load([
-    'src/assets/environmentMaps/0/px.jpg',
-    'src/assets/environmentMaps/0/nx.jpg',
-    'src/assets/environmentMaps/0/py.jpg',
-    'src/assets/environmentMaps/0/ny.jpg',
-    'src/assets/environmentMaps/0/pz.jpg',
-    'src/assets/environmentMaps/0/nz.jpg',
-  ])
+  const environmentMap = cubeTextureLoader.load([px, nx, py, ny, pz, nz])
 
   // scene.background = environmentMap
 
@@ -153,15 +163,15 @@ function init() {
 
   // Geometry
   const textureLoader = new TextureLoader()
-  const alphaCircle = textureLoader.load('src/assets/gradient_img.png')
-  const material = new MeshStandardMaterial({
-    color: 0x0f1111,
+  const alphaCircle = textureLoader.load(gradient)
+  const planeMaterial = new MeshStandardMaterial({
+    color: 0x1f1f1f,
     alphaMap: alphaCircle,
     transparent: true,
     side: BackSide,
   })
 
-  const plane = new Mesh(new CircleGeometry(10, 24), material)
+  const plane = new Mesh(new CircleGeometry(10, 24), planeMaterial)
   plane.receiveShadow = true
   plane.rotation.x = Math.PI / 2
 
@@ -215,11 +225,27 @@ function init() {
   const gltfLoader = new GLTFLoader(loadingManager)
 
   // Model
-  gltfLoader.load('src/assets/fonecar/fonecaredited.gltf', (gltf) => {
+  gltfLoader.load('/f1meshonly/fonecaredited.gltf', (gltf) => {
     const model = gltf.scene
     scene.add(model)
     updateAllMaterials()
   })
+
+  effectComposer = new EffectComposer(renderer)
+  effectComposer.setSize(wrapperWidth, wrapperHeight)
+  effectComposer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+
+  const renderPass = new RenderPass(scene, camera)
+  renderPass.clearColor = true
+  effectComposer.addPass(renderPass)
+
+  outlinePass = new OutlinePass(new Vector2(wrapperWidth, wrapperHeight), scene, camera)
+  outlinePass.enabled = true
+  effectComposer.addPass(outlinePass)
+
+  const gammaCorrectionPass = new ShaderPass(GammaCorrectionShader)
+  gammaCorrectionPass.enabled = true
+  effectComposer.addPass(gammaCorrectionPass)
 
   // Raycaster
   pointer.set(-1, 1)
@@ -263,6 +289,11 @@ function onPointerMove(event) {
   pointer.y = -(event.offsetY / wrapperHeight) * 2 + 1
 }
 
+function addSelectedObject(object) {
+  selectedObjects = []
+  selectedObjects.push(object)
+}
+
 function animate() {
   requestAnimationFrame(animate)
   controls.update()
@@ -271,26 +302,30 @@ function animate() {
   render()
 }
 
-console.log(scene)
+function cameraPosition() {
+  gsap.to(camera.position, { x: 2, y: 2, z: 4, duration: 0.5 })
+}
+
 function render() {
   if (sceneLoaded) {
     raycaster.setFromCamera(pointer, camera)
     let intersects = null
     intersects = raycaster.intersectObjects(scene.children[5].children[0].children)
-    console.log(intersects)
     if (intersects.length > 0) {
       if (INTERSECTED != intersects[0].object) {
-        if (INTERSECTED) INTERSECTED.material.emissive.setHex(INTERSECTED.currentHex)
+        if (INTERSECTED) {
+          const selectedObject = intersects[0].object
+          addSelectedObject(selectedObject)
+          outlinePass.selectedObjects = selectedObjects
+          cameraPosition()
+        }
         INTERSECTED = intersects[0].object
-        INTERSECTED.currentHex = INTERSECTED.material.emissive.getHex()
-        INTERSECTED.material.emissive.setHex(0xff0000)
       }
     } else {
-      if (INTERSECTED) INTERSECTED.material.emissive.setHex(INTERSECTED.currentHex)
-      INTERSECTED = null
+      outlinePass.selectedObjects = []
     }
   }
   fpsGraph.begin()
-  renderer.render(scene, camera)
+  effectComposer.render()
   fpsGraph.end()
 }
