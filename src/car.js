@@ -249,11 +249,11 @@ function init() {
   )
   const gltfLoader = new GLTFLoader(loadingManager)
   const loader = new DRACOLoader()
-  loader.setDecoderPath('public/draco/gltf/')
+  loader.setDecoderPath('./draco/gltf/')
   gltfLoader.setDRACOLoader(loader)
 
   // Model
-  gltfLoader.load('public/fixedNames/fixedNames.gltf', function (gltf) {
+  gltfLoader.load('./fixedNames/fixedNames.gltf', function (gltf) {
     const model = gltf.scene
 
     scene.add(model)
