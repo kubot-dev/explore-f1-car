@@ -16,6 +16,7 @@
     "npm": "^9.6.6",
     "swiper": "^9.2.3",
     "three": "^0.152.2",
+    "three.interactive": "^1.7.0",
     "vue": "^3.2.47"
   },
   "devDependencies": {

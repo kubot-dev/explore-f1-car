@@ -102,3 +102,35 @@ body {
   margin: 0 auto;
   text-align: center;
 }
+
+.dataContainer {
+  position: relative;
+  max-width: 640px;
+  background-color: #1f1f1f;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  opacity: 0;
+  transition: opacity 250ms ease-in-out;
+}
+
+.dataContainer.open {
+  opacity: 1;
+}
+
+.closeBtn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.75rem;
+  width: 20px;
+  height: 20px;
+  border: 1px solid #f1f1f114;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 50;
+  transform: translate(35%, -35%);
+  background-color: #1f1f1f;
+}

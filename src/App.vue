@@ -11,6 +11,10 @@
       <div id="exploreCarWrapper">
         <div class="exploreCar">
           <div class="loading-bar"></div>
+          <div class="dataContainer">
+            <h3 class="partLabel"></h3>
+            <p class="partDescription"></p>
+          </div>
         </div>
       </div>
       <ExploreDrivers id="exploreDrivers"></ExploreDrivers>

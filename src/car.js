@@ -6,7 +6,6 @@ import {
   MeshStandardMaterial,
   Mesh,
   Color,
-  Raycaster,
   Vector2,
   CircleGeometry,
   TextureLoader,
@@ -21,7 +20,6 @@ import {
   SRGBColorSpace,
   ColorManagement,
   ACESFilmicToneMapping,
-  Vector3,
 } from 'three'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
@@ -32,7 +30,12 @@ import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js'
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js'
 import { gsap } from 'gsap'
 import { Pane } from 'tweakpane'
+import { InteractionManager } from 'three.interactive'
 import * as EssentialsPlugin from '@tweakpane/plugin-essentials'
+import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js'
+import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js'
+
+import { carData } from './assets/carData.js'
 
 import px from '/src/assets/environmentMaps/0/px.jpg'
 import nx from '/src/assets/environmentMaps/0/nx.jpg'
@@ -48,17 +51,37 @@ let wrapperWidth = wrapper.clientWidth
 let wrapperHeight = wrapper.clientHeight
 
 const loadingBarElement = document.querySelector('.loading-bar')
+const labelRenderer = new CSS2DRenderer()
+labelRenderer.setSize(wrapperWidth, wrapperHeight)
+labelRenderer.domElement.style.position = 'absolute'
+labelRenderer.domElement.style.top = '0px'
+labelRenderer.domElement.style.pointerEvents = 'none'
+labelRenderer.domElement.classList.add('labelWrapper')
+wrapper.appendChild(labelRenderer.domElement)
+
+const dataContent = document.querySelector('.dataContainer')
+const partLabel = document.querySelector('.partLabel')
+const partDescription = document.querySelector('.partDescription')
+const closeBtn = document.createElement('div')
+closeBtn.classList.add('closeBtn')
+closeBtn.textContent = 'x'
+// const closeBtn = document.querySelector('.closeBtn')
+closeBtn.addEventListener('click', () => {
+  console.log('working')
+  // dataContent.classList.remove('open')
+})
+dataContent.appendChild(closeBtn)
+
+const dataContainer = new CSS2DObject(dataContent)
 
 let camera, scene, renderer
 let directLightHelper
 let controls
-let INTERSECTED
 let pointer = new Vector2()
-const raycaster = new Raycaster()
+let interactionManager
 
 let sceneLoaded = false
 let fpsGraph
-let selectedObjects
 let effectComposer
 let outlinePass
 
@@ -74,6 +97,7 @@ function init() {
   renderer = new WebGLRenderer({
     antialias: true,
   })
+  interactionManager = new InteractionManager(renderer, camera, renderer.domElement)
   controls = new OrbitControls(camera, renderer.domElement)
   const pane = new Pane()
   pane.registerPlugin(EssentialsPlugin)
@@ -84,6 +108,8 @@ function init() {
     label: 'fpsgraph',
   })
 
+  scene.add(dataContainer)
+
   const debugParams = {
     envMapIntensity: 1,
   }
@@ -91,7 +117,7 @@ function init() {
   // Main setup
   scene.background = new Color(0x0f1111)
   camera.position.set(0, 3, 6)
-  camera.lookAt(0, 0, 0)
+  // camera.lookAt(0, 0, 0)
 
   const cameraFolder = pane.addFolder({
     title: 'perspective camera',
@@ -130,7 +156,6 @@ function init() {
 
   directLightHelper = new DirectionalLightHelper(directLight, 2)
   directLightHelper.visible = false
-  // console.log(directLightHelper)
 
   const lightsFolder = pane.addFolder({
     title: 'Lights',
@@ -223,11 +248,58 @@ function init() {
     },
   )
   const gltfLoader = new GLTFLoader(loadingManager)
+  const loader = new DRACOLoader()
+  loader.setDecoderPath('public/draco/gltf/')
+  gltfLoader.setDRACOLoader(loader)
 
   // Model
-  gltfLoader.load('/f1meshonly/fonecaredited.gltf', (gltf) => {
+  gltfLoader.load('public/fixedNames/fixedNames.gltf', function (gltf) {
     const model = gltf.scene
+
     scene.add(model)
+
+    model.traverse((child) => {
+      if (child.children.length === 0) {
+        // Add only objects widthout children
+        if (child.material) {
+          child.material = child.material.clone()
+          child.userData.initialEmissive = child.material.emissive.clone()
+          child.material.emissiveIntensity = 0.5
+        }
+
+        interactionManager.add(child)
+
+        child.addEventListener('mouseover', (event) => {
+          event.stopPropagation()
+
+          document.body.style.cursor = 'pointer'
+
+          if (child.material) {
+            child.userData.materialEmissiveHex = child.material.emissive.getHex()
+            child.material.emissive.setHex(0xff0000)
+            child.material.emissiveIntensity = 0.5
+          }
+        })
+
+        child.addEventListener('mouseout', (event) => {
+          event.stopPropagation()
+
+          document.body.style.cursor = 'default'
+
+          if (child.material) {
+            child.material.emissive.setHex(child.userData.materialEmissiveHex)
+          }
+        })
+
+        child.addEventListener('click', (event) => {
+          event.stopPropagation()
+          dataContent.classList.add('open')
+
+          cameraPosition(event)
+          handlePartDescription(event)
+        })
+      }
+    })
     updateAllMaterials()
   })
 
@@ -244,7 +316,7 @@ function init() {
   effectComposer.addPass(outlinePass)
 
   const gammaCorrectionPass = new ShaderPass(GammaCorrectionShader)
-  gammaCorrectionPass.enabled = true
+  gammaCorrectionPass.enabled = false
   effectComposer.addPass(gammaCorrectionPass)
 
   // Raycaster
@@ -280,6 +352,8 @@ function onWindowResize() {
   camera.aspect = wrapperWidth / wrapperHeight
   camera.updateProjectionMatrix()
 
+  labelRenderer.setSize(wrapperWidth, wrapperHeight)
+
   renderer.setSize(wrapperWidth, wrapperHeight)
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 }
@@ -289,43 +363,32 @@ function onPointerMove(event) {
   pointer.y = -(event.offsetY / wrapperHeight) * 2 + 1
 }
 
-function addSelectedObject(object) {
-  selectedObjects = []
-  selectedObjects.push(object)
-}
-
 function animate() {
   requestAnimationFrame(animate)
   controls.update()
-
   directLightHelper.update()
   render()
 }
 
-function cameraPosition() {
-  gsap.to(camera.position, { x: 2, y: 2, z: 4, duration: 0.5 })
+function cameraPosition(event) {
+  const camTargetName = event.target.name
+  gsap.to(camera.position, carData.cameraPositions[camTargetName])
+}
+
+function handlePartDescription(event) {
+  const partClicked = event.target.name
+  const doStuff = carData.partsDescription[partClicked]
+  partLabel.textContent = doStuff.label
+  partDescription.textContent = doStuff.description
+  dataContainer.position.set(doStuff.labelPosition.x, doStuff.labelPosition.y, doStuff.labelPosition.z)
 }
 
 function render() {
   if (sceneLoaded) {
-    raycaster.setFromCamera(pointer, camera)
-    let intersects = null
-    intersects = raycaster.intersectObjects(scene.children[5].children[0].children)
-    if (intersects.length > 0) {
-      if (INTERSECTED != intersects[0].object) {
-        if (INTERSECTED) {
-          const selectedObject = intersects[0].object
-          addSelectedObject(selectedObject)
-          outlinePass.selectedObjects = selectedObjects
-          cameraPosition()
-        }
-        INTERSECTED = intersects[0].object
-      }
-    } else {
-      outlinePass.selectedObjects = []
-    }
+    interactionManager.update()
   }
   fpsGraph.begin()
   effectComposer.render()
+  labelRenderer.render(scene, camera)
   fpsGraph.end()
 }
