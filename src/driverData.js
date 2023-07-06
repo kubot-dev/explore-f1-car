@@ -94,7 +94,7 @@ const driverImages = {
   yukiTsunoda,
 };
 
-const baseEndpoint = 'http://ergast.com/api/f1';
+const baseEndpoint = 'https://ergast.com/api/f1';
 const driversEndpoint = `current/driverStandings.json`;
 
 async function getStandingsDataAxios() {
