@@ -2,7 +2,6 @@
   import { computed, inject, ref } from 'vue'
 
   const facts = inject('trackFacts')
-
   const currentFactIndex = ref(0)
 
   const currentFact = computed(() => facts[currentFactIndex.value])
@@ -52,6 +51,11 @@
   .factNav {
     display: flex;
     gap: 0.5rem;
+  }
+
+  .fact {
+    max-height: 210px;
+    overflow-y: scroll;
   }
 
   .arrow {

@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Lobster&display=swap');
 :root {
   --bg-color-main: #0f1111;
   --bg-color-secondary: #1f1f1f;
@@ -58,10 +59,12 @@ body {
 }
 
 #exploreCarWrapper {
-  height: 100vh;
-  padding-top: 7.5rem;
+  height: 100dvh;
   display: flex;
   align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .exploreCar {
@@ -94,6 +97,7 @@ body {
 
 .tp-dfwv {
   z-index: 20;
+  display: none;
 }
 
 #app {
@@ -129,8 +133,8 @@ body {
   height: 20px;
   border: 1px solid #f1f1f114;
   border-radius: 50%;
-  cursor: pointer;
   z-index: 50;
   transform: translate(35%, -35%);
   background-color: #1f1f1f;
+  cursor: pointer;
 }

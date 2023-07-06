@@ -61,14 +61,13 @@
   .contentWrapper {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 0.5rem;
     padding-inline: 1.5rem;
     padding-block: 1rem;
   }
 
   .trackName {
-    font-size: 2.25rem;
-    line-height: 55px;
+    font-size: 1.5rem;
   }
 
   .trackLayout {
@@ -76,7 +75,7 @@
   }
 
   .trackFlag {
-    width: 140px;
+    width: 60%;
     border-radius: 0.5rem;
     position: absolute;
     top: 0;
@@ -93,14 +92,15 @@
   .trackInfo {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 0.5rem;
     font-size: 1rem;
   }
 
   .trackStats {
     display: flex;
-    flex-direction: row;
+    flex-flow: row wrap;
     justify-content: space-between;
+    gap: 0.25rem;
   }
 
   .statWrapper {

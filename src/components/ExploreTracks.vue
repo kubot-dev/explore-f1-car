@@ -1,22 +1,22 @@
-<script>
-  import silverStoneTrack from '/src/assets/tracks/trackSilverstone.svg'
-  import gbFlag from '/src/assets/flags/gb.png'
+<script type="module">
+  import silverStoneTrack from '/src/assets/tracks/trackSilverstone.svg';
+  import gbFlag from '/src/assets/flags/gb.png';
 
-  import albertParkTrack from '/src/assets/tracks/trackAlbertPark.svg'
-  import auFlag from '/src/assets/flags/au.png'
+  import albertParkTrack from '/src/assets/tracks/trackAlbertPark.svg';
+  import auFlag from '/src/assets/flags/au.png';
 
-  import monzaTrack from '/src/assets/tracks/RaceCircuitAutodromaDiMonza.svg'
-  import itFlag from '/src/assets/flags/it.png'
+  import monzaTrack from '/src/assets/tracks/RaceCircuitAutodromaDiMonza.svg';
+  import itFlag from '/src/assets/flags/it.png';
   // script setup interfere with swiper library
 
-  import { ref } from 'vue'
-  import TrackCard from './TrackCard.vue'
+  import { ref } from 'vue';
+  import TrackCard from './TrackCard.vue';
 
-  import { SwiperContainer, SwiperSlide, register } from 'swiper/element/bundle'
+  import { register } from 'swiper/element/bundle';
 
-  register()
+  register();
 
-  import 'swiper/css/bundle'
+  import 'swiper/css/bundle';
 
   export default {
     components: { TrackCard },
@@ -108,24 +108,36 @@
             },
           ],
         },
-      ])
+      ]);
       return {
         tracks,
-      }
+      };
     },
-  }
+  };
 </script>
 
 <template>
   <div class="tracksWrapper">
     <swiper-container
-      pagination-clickable="true"
+      :navigation="true"
+      :keyboard="true"
+      :direction="horizontal"
+      :mousewheel="true"
+      :mousewheel-force-to-axis="true"
       centered-slides="true"
-      slides-per-view="3"
+      :slides-per-view="1"
       effect="coverflow"
-      coverflow-effect-rotate="10"
+      coverflow-effect-rotate="5"
       coverflow-effect-scale="0.9"
-      coverflow-effect-depth="25"
+      coverflow-effect-depth="50"
+      :breakpoints="{
+        600: {
+          slidesPerView: 2,
+        },
+        900: {
+          slidesPerView: 3,
+        },
+      }"
     >
       <swiper-slide v-for="track in tracks" :key="track.id">
         <TrackCard :track="track"></TrackCard>
@@ -140,8 +152,8 @@
     justify-content: center;
     align-items: center;
 
-    padding-top: 7.5rem;
-    height: 100vh;
+    height: calc(100dvh - 50px);
+    padding-inline: 0.75rem;
   }
 
   swiper-slide {

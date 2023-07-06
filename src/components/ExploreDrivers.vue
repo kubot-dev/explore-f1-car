@@ -1,366 +1,61 @@
 <script setup>
-  import { ref, reactive, computed } from 'vue'
-  import DriverCard from './DriverCard.vue'
+  import { ref, reactive, computed, onMounted } from 'vue';
+  import DriverCard from './DriverCard.vue';
+  import { drivers } from '../driverData.js';
 
-  import atFlag from '/src/assets/flags/at.png'
-  import auFlag from '/src/assets/flags/au.png'
-  import beFlag from '/src/assets/flags/be.png'
-  import bhFlag from '/src/assets/flags/bh.png'
-  import brFlag from '/src/assets/flags/br.png'
-  import caFlag from '/src/assets/flags/ca.png'
-  import cnFlag from '/src/assets/flags/cn.png'
-  import deFlag from '/src/assets/flags/de.png'
-  import dkFlag from '/src/assets/flags/dk.png'
-  import esFlag from '/src/assets/flags/es.png'
-  import fiFlag from '/src/assets/flags/fi.png'
-  import frFlag from '/src/assets/flags/fr.png'
-  import gbFlag from '/src/assets/flags/gb.png'
-  import huFlag from '/src/assets/flags/hu.png'
-  import itFlag from '/src/assets/flags/it.png'
-  import jpFlag from '/src/assets/flags/jp.png'
-  import mcFlag from '/src/assets/flags/mc.png'
-  import mxFlag from '/src/assets/flags/mx.png'
-  import nlFlag from '/src/assets/flags/nl.png'
-  import noFlag from '/src/assets/flags/no.png'
-  import qaFlag from '/src/assets/flags/qa.png'
-  import thFlag from '/src/assets/flags/th.png'
-  import usFlag from '/src/assets/flags/us.png'
+  const screenWidth = ref(0);
+  const visibleCount = ref(4);
 
-  const flags = {
-    at: atFlag,
-    au: auFlag,
-    be: beFlag,
-    bh: bhFlag,
-    br: brFlag,
-    ca: caFlag,
-    cn: cnFlag,
-    de: deFlag,
-    dk: dkFlag,
-    es: esFlag,
-    fi: fiFlag,
-    fr: frFlag,
-    gb: gbFlag,
-    hu: huFlag,
-    it: itFlag,
-    jp: jpFlag,
-    mc: mcFlag,
-    mx: mxFlag,
-    nl: nlFlag,
-    no: noFlag,
-    qa: qaFlag,
-    th: thFlag,
-    us: usFlag,
+  onMounted(() => {
+    onScreenResize();
+    updateScreenWidth();
+    responsiveVisibleCount.value;
+    showPage(1);
+  });
+
+  function onScreenResize() {
+    window.addEventListener('resize', () => {
+      responsiveVisibleCount.value;
+      updateScreenWidth();
+      showPage(1);
+    });
+  }
+  function updateScreenWidth() {
+    screenWidth.value = window.innerWidth;
   }
 
-  import alexAlbon from '/src/assets/drivers/alexAlbon.png'
-  import carlosSainz from '/src/assets/drivers/carlosSainz.png'
-  import charlesLeclerc from '/src/assets/drivers/charlesLeclerc.png'
-  import estebanOcon from '/src/assets/drivers/estebanOcon.png'
-  import fernandoAlonso from '/src/assets/drivers/fernandoAlonso.png'
-  import georgeRussell from '/src/assets/drivers/georgeRussell.png'
-  import kevinMagnussen from '/src/assets/drivers/kevinMagnussen.png'
-  import kuanJuZhou from '/src/assets/drivers/kuanJuZhou.png'
-  import lanceStroll from '/src/assets/drivers/lanceStroll.png'
-  import landoNorris from '/src/assets/drivers/landoNorris.png'
-  import lewisHamilton from '/src/assets/drivers/lewisHamilton.png'
-  import loganSargeant from '/src/assets/drivers/loganSargeant.png'
-  import maxVerstappen from '/src/assets/drivers/maxVerstappen.png'
-  import nicoHulkenberg from '/src/assets/drivers/nicoHulkenberg.png'
-  import nyckDeVries from '/src/assets/drivers/nyckDeVries.png'
-  import oscarPiastri from '/src/assets/drivers/oscarPiastri.png'
-  import pierreGasly from '/src/assets/drivers/pierreGasly.png'
-  import sergioPerez from '/src/assets/drivers/sergioPerez.png'
-  import valtteriBottas from '/src/assets/drivers/valtteriBottas.png'
-  import yukiTsunoda from '/src/assets/drivers/yukiTsunoda.png'
-
-  const driverImages = {
-    alexAlbon,
-    carlosSainz,
-    charlesLeclerc,
-    estebanOcon,
-    fernandoAlonso,
-    georgeRussell,
-    kevinMagnussen,
-    kuanJuZhou,
-    lanceStroll,
-    landoNorris,
-    lewisHamilton,
-    loganSargeant,
-    maxVerstappen,
-    nicoHulkenberg,
-    nyckDeVries,
-    oscarPiastri,
-    pierreGasly,
-    sergioPerez,
-    valtteriBottas,
-    yukiTsunoda,
-  }
-
-  const drivers = ref([
-    {
-      id: 0,
-      driverName: 'Max Verstappen',
-      team: 'Red Bull',
-      wins: 37,
-      podiums: 80,
-      poles: 22,
-      points: 2080.5,
-      driverFlag: flags.nl,
-      driverImg: driverImages.maxVerstappen,
-      teamColor: '#3671C6',
-    },
-    {
-      id: 1,
-      driverName: 'Sergio Perez',
-      team: 'Red Bull',
-      wins: 5,
-      podiums: 28,
-      poles: 2,
-      points: 1255,
-      driverFlag: flags.mx,
-      driverImg: driverImages.sergioPerez,
-      teamColor: '#3671C6',
-    },
-    {
-      id: 2,
-      driverName: 'Charles Leclerc',
-      team: 'Ferrari',
-      wins: 5,
-      podiums: 24,
-      poles: 18,
-      points: 874,
-      driverFlag: flags.mc,
-      driverImg: driverImages.charlesLeclerc,
-      teamColor: '#F91536',
-    },
-    {
-      id: 3,
-      driverName: 'Carlos Sainz',
-      team: 'Ferrari',
-      wins: 1,
-      podiums: 15,
-      poles: 3,
-      points: 802.5,
-      driverFlag: flags.es,
-      driverImg: driverImages.carlosSainz,
-      teamColor: '#F91536',
-    },
-    {
-      id: 4,
-      driverName: 'Lewis Hamilton',
-      team: 'Mercedes',
-      wins: 103,
-      podiums: 192,
-      poles: 103,
-      points: 4443.5,
-      driverFlag: flags.gb,
-      driverImg: driverImages.lewisHamilton,
-      teamColor: '#6CD3BF',
-    },
-    {
-      id: 5,
-      driverName: 'George Russell',
-      team: 'Mercedes',
-      wins: 1,
-      podiums: 9,
-      poles: 1,
-      points: 312,
-      driverFlag: flags.gb,
-      driverImg: driverImages.georgeRussell,
-      teamColor: '#6CD3BF',
-    },
-    {
-      id: 6,
-      driverName: 'Esteban Ocon',
-      team: 'Alpine',
-      wins: 1,
-      podiums: 2,
-      poles: '-',
-      points: 368,
-      driverFlag: flags.fr,
-      driverImg: driverImages.estebanOcon,
-      teamColor: '#2293D1',
-    },
-    {
-      id: 7,
-      driverName: 'Pierre Gasly',
-      team: 'Alpine',
-      wins: 1,
-      podiums: 3,
-      poles: '-',
-      points: 336,
-      driverFlag: flags.fr,
-      driverImg: driverImages.pierreGasly,
-      teamColor: '#2293D1',
-    },
-    {
-      id: 8,
-      driverName: 'Lando Norris',
-      team: 'McLaren',
-      wins: '-',
-      podiums: 6,
-      poles: 1,
-      points: 436,
-      driverFlag: flags.gb,
-      driverImg: driverImages.landoNorris,
-      teamColor: '#F58020',
-    },
-    {
-      id: 9,
-      driverName: 'Oscar Piastri',
-      team: 'McLaren',
-      wins: '-',
-      podiums: '-',
-      poles: '-',
-      points: 4,
-      driverFlag: flags.au,
-      driverImg: driverImages.oscarPiastri,
-      teamColor: '#F58020',
-    },
-    {
-      id: 10,
-      driverName: 'Valtteri Bottas',
-      team: 'Alfa Romeo',
-      wins: 10,
-      podiums: 67,
-      poles: 20,
-      points: 1791,
-      driverFlag: flags.fi,
-      driverImg: driverImages.valtteriBottas,
-      teamColor: '#C92D4B',
-    },
-    {
-      id: 11,
-      driverName: 'Guanyu Zhou',
-      team: 'Alfa Romeo',
-      wins: '-',
-      podiums: '-',
-      poles: '-',
-      points: 8,
-      driverFlag: flags.cn,
-      driverImg: driverImages.kuanJuZhou,
-      teamColor: '#C92D4B',
-    },
-    {
-      id: 12,
-      driverName: 'Fernando Alonso',
-      team: 'Aston Martin',
-      wins: 32,
-      podiums: 101,
-      poles: 22,
-      points: 2106,
-      driverFlag: flags.es,
-      driverImg: driverImages.fernandoAlonso,
-      teamColor: '#358C75',
-    },
-    {
-      id: 13,
-      driverName: 'Lance Stroll',
-      team: 'Aston Martin',
-      wins: '-',
-      podiums: 3,
-      poles: 1,
-      points: 214,
-      driverFlag: flags.ca,
-      driverImg: driverImages.lanceStroll,
-      teamColor: '#358C75',
-    },
-    {
-      id: 14,
-      driverName: 'Kevin Magnussen',
-      team: 'Haas',
-      wins: '-',
-      podiums: 1,
-      poles: 1,
-      points: 184,
-      driverFlag: flags.dk,
-      driverImg: driverImages.kevinMagnussen,
-      teamColor: '#B6BABD',
-    },
-    {
-      id: 15,
-      driverName: 'Nico Hulkenberg',
-      team: 'Haas',
-      wins: '-',
-      podiums: '-',
-      poles: 1,
-      points: 527,
-      driverFlag: flags.de,
-      driverImg: driverImages.nicoHulkenberg,
-      teamColor: '#B6BABD',
-    },
-    {
-      id: 16,
-      driverName: 'Yuki Tsunoda',
-      team: 'Alpha Tauri',
-      wins: '-',
-      podiums: '-',
-      poles: '-',
-      points: 45,
-      driverFlag: flags.jp,
-      driverImg: driverImages.yukiTsunoda,
-      teamColor: '#5E8FAA',
-    },
-    {
-      id: 17,
-      driverName: 'Nyck de Vries',
-      team: 'Alpha Tauri',
-      wins: '-',
-      podiums: '-',
-      poles: '-',
-      points: 2,
-      driverFlag: flags.nl,
-      driverImg: driverImages.nyckDeVries,
-      teamColor: '#5E8FAA',
-    },
-    {
-      id: 18,
-      driverName: 'Alex Albon',
-      team: 'Williams',
-      wins: '-',
-      podiums: 2,
-      poles: '-',
-      points: 202,
-      driverFlag: flags.th,
-      driverImg: driverImages.alexAlbon,
-      teamColor: '#37BEDD',
-    },
-    {
-      id: 19,
-      driverName: 'Logan Sargeant',
-      team: 'Williams',
-      wins: '-',
-      podiums: '-',
-      poles: '-',
-      points: '-',
-      driverFlag: flags.us,
-      driverImg: driverImages.loganSargeant,
-      teamColor: '#37BEDD',
-    },
-  ])
+  const responsiveVisibleCount = computed(() => {
+    if (screenWidth.value < 600) {
+      visibleCount.value = 1;
+    } else if (screenWidth.value < 1100) {
+      visibleCount.value = 2;
+    } else {
+      visibleCount.value = 4;
+    }
+  });
 
   const pages = reactive({
     displayedItems: [],
-    visibleCount: 8,
+    visibleCount: visibleCount,
     currentPage: 1,
-  })
+  });
 
   const pageCount = computed(() => {
-    return Math.ceil(drivers.value.length / pages.visibleCount)
-  })
+    return Math.ceil(drivers.length / pages.visibleCount);
+  });
 
   const showPage = (page) => {
-    const startIndex = (page - 1) * pages.visibleCount
-    const endIndex = startIndex + pages.visibleCount
-    pages.displayedItems = drivers.value.slice(startIndex, endIndex)
-    pages.currentPage = page
-  }
-
-  showPage(1)
+    const startIndex = (page - 1) * pages.visibleCount;
+    const endIndex = startIndex + pages.visibleCount;
+    pages.displayedItems = drivers.slice(startIndex, endIndex);
+    pages.currentPage = page;
+  };
+  showPage(1);
 </script>
 
 <template>
   <div class="driversWrapper">
+    <h4 class="dataInfo">The wins and points data are updated from an external source after each race. (Ergast API)</h4>
     <div class="drivers">
       <DriverCard v-for="driver in pages.displayedItems" :key="driver.id" :drivers="driver"></DriverCard>
     </div>
@@ -404,8 +99,7 @@
 
 <style scoped>
   .driversWrapper {
-    padding-top: 7.5rem;
-    height: 100vh;
+    height: 100dvh;
 
     display: flex;
     flex-direction: column;
@@ -413,18 +107,22 @@
     gap: 2rem;
   }
 
+  .dataInfo {
+    opacity: 0.5;
+  }
+
   .drivers {
     width: fit-content;
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: repeat(2, 1fr);
+    grid-template-columns: repeat(v-bind('visibleCount'), 1fr);
     gap: 2rem;
     margin: 0 auto;
   }
 
   .pagination {
+    padding: 1rem;
     display: flex;
-    flex-direction: row;
+    flex-flow: row wrap;
     gap: 1.5rem;
     justify-content: center;
   }
