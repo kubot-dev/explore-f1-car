@@ -1,7 +1,29 @@
-# Vue 3 + Vite
+# Explore F1 car
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+As a F1 fan i wanted to create a site where user can interact with 3d model of a f1 car and see what elements are f1 car built from with a little technical details. I took this oportunity to learn a bit about js library three.js. Also learned basics of a Vue framework and how to get data from an external API.
 
-## Recommended IDE Setup
+# Learned building this.
 
-- [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+- Vue.js
+- Async js data from API
+- Figma prototype
+
+### Screenshot
+
+![](public/explore-car-thumbnail.png)
+
+### Built with
+
+- Vue.js
+- Javascript
+- CSS
+- Three.js
+
+## To do next
+
+To continue learning i will work on these tasks
+
+- refactor the code
+- fix performance of a 3D view
+- add more tracks
+- add more data for drivers
